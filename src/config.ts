@@ -41,4 +41,7 @@ export const config = {
   interval: Number(process.env.INTERVAL) || 2 * 60 * 60 * 1000,
   txWaitingTime: Number(process.env.TX_WAITING_TIME) || 30000,
   retries: Number(process.env.RETRIES) || 3,
+  disablePayBeneficiaries: process.env.DISABLE_PAY_BENEFICIARIES === "true",
+  disableReburn: process.env.DISABLE_REBURN === "true",
+  disableCollect: process.env.DISABLE_COLLECT === "true",
 };

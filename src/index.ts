@@ -47,6 +47,12 @@ async function main() {
     payer: manaSharer.address,
   });
 
+  log("Starting with functionalities:", {
+    payBeneficiaries: !config.disablePayBeneficiaries,
+    reburn: !config.disableReburn,
+    collect: !config.disableCollect,
+  });
+
   while (true) {
     for (let i = 0; i < fogatas.length; i += 1) {
       const fogata = fogatas[i];
@@ -56,7 +62,9 @@ async function main() {
         if (!poolState) continue;
 
         const now = Date.now();
+
         if (
+          !config.disablePayBeneficiaries &&
           now >= fogata.paymentBeneficiaries.next &&
           !fogata.paymentBeneficiaries.processing
         ) {
@@ -74,7 +82,11 @@ async function main() {
           })().catch();
         }
 
-        if (now >= fogata.reburn.next && !fogata.reburn.processing) {
+        if (
+          !config.disableReburn &&
+          now >= fogata.reburn.next &&
+          !fogata.reburn.processing
+        ) {
           fogata.reburn.processing = true;
           fogata.options.onlyOperation = true;
           const { operation } = await fogata.functions.reburn_and_snapshot();
@@ -90,7 +102,11 @@ async function main() {
           })().catch();
         }
 
-        if (now >= fogata.collect.next && !fogata.collect.processing) {
+        if (
+          !config.disableCollect &&
+          now >= fogata.collect.next &&
+          !fogata.collect.processing
+        ) {
           fogata.collect.processing = true;
           const { accounts } = (
             await fogata.functions.get_all_accounts<{ accounts: string[] }>()
